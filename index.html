@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Jaime Candel — Full-stack & mobile developer. Portfolio with interactive demos of Sphere, best365, IdeaTracker and Storyforge." />
+    <meta property="og:title" content="Jaime Candel — Developer Portfolio" />
+    <meta property="og:description" content="Try interactive demos of my apps right in the browser." />
+    <meta property="og:type" content="website" />
+    <title>Jaime Candel — Developer Portfolio</title>
+  </head>
+  <body>
+    <!-- Hidden static form so Netlify Forms detects it at build time (the real
+         form is rendered by React in src/components/sections/Contact.tsx) -->
+    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
