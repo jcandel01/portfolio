@@ -36,10 +36,10 @@ export const projects: Project[] = [
     name: 'best365',
     subtitle: 'Football value-betting & bankroll',
     description:
-      'A data product that scrapes football odds from multiple bookmaker APIs, runs several AI models in consensus to estimate fair probabilities, and surfaces +EV betting opportunities with bankroll management built in. A Python backend orchestrates the scraping, model inference and API calls; results are stored in Supabase and consumed by the mobile app.',
-    tech: ['React Native', 'Expo', 'Supabase', 'Python', 'GitHub Actions', 'AI Models', 'REST APIs'],
+      'A data product that scrapes football odds from multiple bookmaker APIs and runs an ensemble of models — Dixon-Coles (MLE), XGBoost, Random Forest, Gradient Boosting, AdaBoost and Logistic Regression with isotonic calibration — in consensus to estimate fair probabilities and surface +EV opportunities. A Python backend orchestrates scraping, model inference and API calls; results are stored in Supabase and consumed by the mobile app.',
+    tech: ['React Native', 'Expo', 'Supabase', 'Python', 'XGBoost', 'scikit-learn', 'Dixon-Coles', 'GitHub Actions'],
     features: [
-      'Multi-model AI consensus to estimate fair odds and detect value',
+      'Ensemble of 6 models (XGBoost, Random Forest, Gradient Boosting, AdaBoost, Dixon-Coles, Logistic Regression) in consensus',
       'Automated odds scraper hitting bookmaker APIs on a schedule',
       'Value bets ranked by expected value (EV%) with stake suggestions',
       'Bankroll tracker with full bet history and market vs. model comparison',
