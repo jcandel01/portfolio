@@ -1,6 +1,6 @@
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
-import { Hero } from './components/sections/Hero'
+import { HyperspaceIntro } from './components/sections/HyperspaceIntro'
 import { About } from './components/sections/About'
 import { Experience } from './components/sections/Experience'
 import { Skills } from './components/sections/Skills'
@@ -12,11 +12,12 @@ function App() {
     <>
       <Navbar />
       <main>
-        <Hero />
-        <About />
+        {/* Salida del hiperespacio: About sobre la nave -> revela proyectos */}
+        <HyperspaceIntro overlay={<About />}>
+          <Projects />
+        </HyperspaceIntro>
         <Experience />
         <Skills />
-        <Projects />
         <Contact />
       </main>
       <Footer />
