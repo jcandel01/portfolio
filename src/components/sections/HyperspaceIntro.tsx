@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
  *
  *  1. Entrada: el vídeo de la NAVE ocupa toda la pantalla (100vh).
  *  2. Al deslizar: entra el vídeo de TRANSICIÓN (crossfade) mientras la nave se aleja.
- *  3. Al llegar a los proyectos: la transición cede paso al vídeo FINAL (Untitled),
+ *  3. Al llegar a los proyectos: la transición cede paso al vídeo FINAL,
  *     que queda fijo de fondo mientras se ven los proyectos y lo demás.
  *
  * Cada vídeo se reproduce solo cuando empieza a aparecer (ni antes ni después),
@@ -123,11 +123,13 @@ export function HyperspaceIntro({
       <Starfield />
 
       {/* Vídeo FINAL: fondo fijo sobre el que se ven los proyectos y lo demás.
-          Detrás de la transición; se reproduce solo al empezar a aparecer. */}
+          Detrás de la transición; se reproduce solo al empezar a aparecer.
+          El fichero ya es cíclico (la cola está fundida sobre la cabeza), así
+          que `loop` nativo encadena sin que se note dónde vuelve a empezar. */}
       <video
         ref={finalRef}
         className="hs-final pointer-events-none fixed inset-0 -z-20 h-full w-full object-cover opacity-0"
-        src="/Untitled.mp4"
+        src="/space-loop.mp4"
         muted
         loop
         playsInline
@@ -152,7 +154,7 @@ export function HyperspaceIntro({
       <section className="hs-stage relative h-screen w-full overflow-hidden">
         <video
           className="hs-video absolute inset-0 h-full w-full object-cover will-change-transform"
-          src="/haz_que_las_rallas_blancas_se.mp4"
+          src="/cockpit-loop.mp4"
           autoPlay
           muted
           loop
