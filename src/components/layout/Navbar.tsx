@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Download, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { profile } from '../../data/profile'
 
 const navLinks = [
@@ -7,7 +7,6 @@ const navLinks = [
   { href: '#experience', label: 'Experience' },
   { href: '#skills', label: 'Skills' },
   { href: '#projects', label: 'Projects' },
-  { href: '#contact', label: 'Contact' },
 ]
 
 export function Navbar() {
@@ -45,9 +44,6 @@ export function Navbar() {
               {l.label}
             </a>
           ))}
-          <a href={profile.cvUrl} download className="btn-primary ml-2 px-4 py-2 text-xs">
-            <Download size={14} /> CV
-          </a>
         </div>
 
         <button
@@ -71,14 +67,6 @@ export function Navbar() {
               {l.label}
             </a>
           ))}
-          <a
-            href={profile.cvUrl}
-            download
-            className="btn-primary mt-2 w-full"
-            onClick={() => setOpen(false)}
-          >
-            <Download size={14} /> Download CV
-          </a>
         </div>
       )}
     </header>
