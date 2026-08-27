@@ -9,8 +9,16 @@ import { Button } from '../ui/Button'
  */
 export function Hero() {
   return (
-    <Tile id="top" variant="light" flush className="pb-section pt-xxl">
-      <div className="container-grid grid grid-cols-1 gap-lg lg:grid-cols-12">
+    <Tile id="top" variant="light" flush className="min-h-[680px] overflow-hidden pb-section pt-xxl sm:min-h-[720px]">
+      <img
+        src="/hero-photo.jpg"
+        alt="Jaime Candel overlooking a mountain landscape at sunrise"
+        className="absolute inset-0 h-full w-full object-cover object-[63%_50%] sm:object-[70%_50%]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/65 via-white/45 to-white/0" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/55 to-transparent" />
+
+      <div className="container-grid relative z-10 grid grid-cols-1 gap-lg lg:grid-cols-12">
         <div className="lg:col-span-7">
           <h1 className="text-display-md font-display sm:text-display-lg xl:text-hero-display">
             {profile.name}
