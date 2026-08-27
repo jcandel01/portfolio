@@ -1,66 +1,65 @@
-import { Briefcase } from 'lucide-react'
 import { profile } from '../../data/profile'
+import { Tile } from '../ui/Tile'
 import { Reveal } from '../layout/Reveal'
 
+/**
+ * Editorial ledger: period on the left rail, role and detail on the right. One
+ * hairline above each group instead of a border on every row, and no timeline
+ * dots. The alignment does the work the old gradient rule was doing.
+ */
 export function Experience() {
   return (
-    <section id="experience" className="scroll-mt-20 py-24">
-      <div className="container-x">
+    <Tile id="experience" variant="light">
+      <div className="container-grid">
         <Reveal>
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-brand-soft">Career</p>
-          <h2 className="section-title">Experience</h2>
+          <h2 className="font-display text-display-md">Where I have worked</h2>
         </Reveal>
 
-        <div className="relative mt-10">
-          {/* Timeline vertical line */}
-          <div className="absolute bottom-3 left-0 top-3 hidden w-px bg-gradient-to-b from-brand/60 via-accent/30 to-transparent sm:block" />
-
-          <div className="space-y-5 sm:pl-8">
-            {profile.experience.map((job, i) => (
-              <Reveal key={job.company} delay={i * 0.08}>
-                <div className="relative">
-                  {/* Timeline dot */}
-                  <div className="absolute -left-[2.125rem] top-[1.1rem] hidden h-3 w-3 rounded-full border-2 border-brand bg-ink-950 sm:block" />
-
-                  <div className="glass rounded-2xl p-5">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand/30 to-accent/20">
-                          <Briefcase size={16} className="text-brand-soft" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-white">{job.role}</h3>
-                          <p className="text-sm font-medium text-brand-soft">{job.company}</p>
-                        </div>
-                      </div>
-                      <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-slate-400">
-                        {job.period}
-                      </span>
-                    </div>
-
-                    <ul className="mt-3 space-y-1.5">
-                      {job.bullets.map((bullet) => (
-                        <li key={bullet} className="flex items-start gap-2 text-sm text-slate-300">
-                          <span className="mt-[0.4rem] h-1 w-1 shrink-0 rounded-full bg-accent" />
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {job.stack.map((s) => (
-                        <span key={s} className="chip text-[11px]">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+        <div className="mt-xxl space-y-0">
+          {profile.experience.map((job, i) => (
+            <Reveal key={job.company} delay={i * 0.06}>
+              <article className="grid grid-cols-1 gap-lg border-t border-hairline py-xl lg:grid-cols-12">
+                <div className="lg:col-span-3">
+                  <p className="text-caption-strong text-ink-muted-80">{job.period}</p>
                 </div>
-              </Reveal>
+                <div className="lg:col-span-8 lg:col-start-5">
+                  <h3 className="text-tagline font-display">{job.company}</h3>
+                  <p className="mt-xxs text-body text-ink-muted-80">{job.role}</p>
+                  <ul className="mt-sm max-w-[65ch] space-y-xxs">
+                    {job.bullets.map((b) => (
+                      <li key={b} className="text-body text-ink-muted-80">
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="mt-sm flex flex-wrap gap-xs">
+                    {job.stack.map((s) => (
+                      <li key={s} className="chip">
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="mt-xxl">
+          <h3 className="text-tagline font-display">Certifications</h3>
+          <div className="mt-lg grid grid-cols-1 gap-lg sm:grid-cols-2">
+            {profile.certifications.map((c) => (
+              <div key={c.name} className="card-utility">
+                <p className="text-body-strong">{c.name}</p>
+                <p className="mt-xxs text-caption text-ink-muted-80">
+                  {c.issuer}
+                  {c.hours ? ` (${c.hours})` : ''}
+                </p>
+              </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
-    </section>
+    </Tile>
   )
 }

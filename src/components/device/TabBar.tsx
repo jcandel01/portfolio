@@ -10,15 +10,29 @@ interface TabBarProps {
   tabs: TabItem[]
   active: string
   onChange: (key: string) => void
-  accentClass?: string // text color class for active tab, e.g. 'text-violet-400'
+  /** Text color class for the active tab, e.g. 'text-demo-sphere-accent'. */
+  accentClass?: string
+  /** Background class for the bar. Solid, not frosted. */
+  surfaceClass?: string
+  inactiveClass?: string
 }
 
 /**
- * Bottom tab bar used inside mobile demos.
+ * Bottom tab bar used inside the mobile demos. Solid surface rather than a
+ * blurred translucent one: backdrop-filter is reserved for the site's sticky nav.
  */
-export function TabBar({ tabs, active, onChange, accentClass = 'text-brand-soft' }: TabBarProps) {
+export function TabBar({
+  tabs,
+  active,
+  onChange,
+  accentClass = 'text-white',
+  surfaceClass = 'bg-surface-black',
+  inactiveClass = 'text-white/40',
+}: TabBarProps) {
   return (
-    <div className="absolute inset-x-0 bottom-0 z-20 flex items-stretch justify-around border-t border-white/10 bg-black/60 px-2 pb-5 pt-2 backdrop-blur-xl">
+    <div
+      className={`absolute inset-x-0 bottom-0 z-20 flex items-stretch justify-around border-t border-white/10 px-2 pb-5 pt-2 ${surfaceClass}`}
+    >
       {tabs.map((tab) => {
         const Icon = tab.icon
         const isActive = tab.key === active
@@ -26,12 +40,13 @@ export function TabBar({ tabs, active, onChange, accentClass = 'text-brand-soft'
           <button
             key={tab.key}
             onClick={() => onChange(tab.key)}
-            className={`flex flex-1 flex-col items-center gap-0.5 rounded-lg py-1 transition-colors ${
-              isActive ? accentClass : 'text-slate-500'
+            aria-current={isActive ? 'page' : undefined}
+            className={`flex flex-1 flex-col items-center gap-0.5 rounded-sm py-1 transition-transform active:scale-[0.95] ${
+              isActive ? accentClass : inactiveClass
             }`}
           >
             <Icon size={20} strokeWidth={isActive ? 2.4 : 1.8} />
-            <span className="text-[9px] font-medium">{tab.label}</span>
+            <span className="text-micro-legal font-semibold">{tab.label}</span>
           </button>
         )
       })}

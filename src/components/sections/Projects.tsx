@@ -1,92 +1,75 @@
-import { Check, Hand, ExternalLink } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { projects } from '../../data/projects'
-import { demoComponents } from '../demos'
+import type { Project } from '../../data/projects'
+import { Tile } from '../ui/Tile'
+import { useOnDark } from '../ui/tile-context'
+import type { TileVariant } from '../ui/Tile'
 import { Reveal } from '../layout/Reveal'
+import { demoComponents } from '../demos'
+
+/**
+ * Product tiles. These stay centered and symmetric: DESIGN.md owns this
+ * structure, so the taste layer's asymmetry allowance does not apply here.
+ *
+ * The tile rhythm repeats deliberately. The alternating surface color is the
+ * section divider, which is the whole point of the Apple tile system.
+ */
+
+const RHYTHM: TileVariant[] = ['dark', 'light', 'dark-2', 'parchment', 'dark-3']
+
+function ProjectBody({ project }: { project: Project }) {
+  const onDark = useOnDark()
+  const Demo = demoComponents[project.key]
+
+  const muted = onDark ? 'text-body-muted' : 'text-ink-muted-80'
+  const chip = onDark ? 'chip-on-dark' : 'chip'
+  // Action Blue disappears on a near-black tile: switch to Sky Link Blue.
+  const accent = onDark ? 'text-primary-on-dark' : 'text-primary'
+
+  return (
+    <div className="container-grid">
+      <Reveal className="mx-auto max-w-prose text-center">
+        <h3 className="font-display text-display-md sm:text-display-lg">{project.name}</h3>
+        <p className={`mt-sm text-lead-airy sm:text-lead ${muted}`}>{project.subtitle}</p>
+        <p className={`mx-auto mt-lg max-w-[65ch] text-body ${muted}`}>{project.description}</p>
+      </Reveal>
+
+      {/* Each demo brings its own device frame and URL. The frame is the product
+          render resting on the tile surface: the one place shadow lives. */}
+      <Reveal delay={0.08} className="mt-xxl flex justify-center">
+        <Demo />
+      </Reveal>
+
+      <Reveal delay={0.12} className="mx-auto mt-xxl max-w-prose">
+        <p className={`text-caption-strong ${muted}`}>Try it above. It is running, not a screenshot.</p>
+        <ul className="mt-lg grid grid-cols-1 gap-sm sm:grid-cols-2">
+          {project.features.map((f) => (
+            <li key={f} className="flex items-start gap-xs">
+              <Check size={16} className={`mt-1 shrink-0 ${accent}`} aria-hidden="true" />
+              <span className={`text-body ${muted}`}>{f}</span>
+            </li>
+          ))}
+        </ul>
+        <ul className="mt-lg flex flex-wrap gap-xs">
+          {project.tech.map((t) => (
+            <li key={t} className={chip}>
+              {t}
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+    </div>
+  )
+}
 
 export function Projects() {
   return (
-    <section id="projects" className="scroll-mt-20 py-24">
-      <div className="container-x">
-        <Reveal>
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-brand-soft">Work</p>
-          <h2 className="section-title">Projects you can actually try</h2>
-          <p className="mt-3 max-w-2xl text-slate-300">
-            Each project below ships with a live, interactive demo. Tap around the screens — it&apos;s
-            a hands-on preview of the real apps, no install required.
-          </p>
-        </Reveal>
-
-        <div className="mt-14 space-y-24">
-          {projects.map((project, i) => {
-            const Demo = demoComponents[project.key]
-            const reversed = i % 2 === 1
-            return (
-              <div
-                key={project.key}
-                className={`grid items-center gap-10 lg:grid-cols-2 lg:gap-14 ${
-                  reversed ? 'lg:[&>*:first-child]:order-2' : ''
-                }`}
-              >
-                {/* Info */}
-                <Reveal>
-                  <div>
-                    <div className="mb-3 flex items-center gap-3">
-                      <span
-                        className={`inline-block h-10 w-1.5 rounded-full bg-gradient-to-b ${project.accent}`}
-                      />
-                      <div>
-                        <h3 className="text-2xl font-extrabold text-white">{project.name}</h3>
-                        <p className="text-sm text-slate-400">{project.subtitle}</p>
-                      </div>
-                    </div>
-
-                    <p className="text-slate-300">{project.description}</p>
-
-                    <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                      {project.features.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                          <Check size={16} className="mt-0.5 shrink-0 text-emerald-400" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {project.tech.map((t) => (
-                        <span key={t} className="chip">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-5 flex flex-wrap items-center gap-4">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1.5 text-xs font-semibold text-brand-soft">
-                        <Hand size={14} /> Interactive demo — try it
-                      </span>
-                      {project.links?.map((link) => (
-                        <a
-                          key={link.url}
-                          href={link.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white"
-                        >
-                          {link.label} <ExternalLink size={14} />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </Reveal>
-
-                {/* Demo */}
-                <Reveal delay={0.1} className="flex justify-center">
-                  <Demo />
-                </Reveal>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </section>
+    <div id="projects">
+      {projects.map((project, i) => (
+        <Tile key={project.key} variant={RHYTHM[i % RHYTHM.length]}>
+          <ProjectBody project={project} />
+        </Tile>
+      ))}
+    </div>
   )
 }

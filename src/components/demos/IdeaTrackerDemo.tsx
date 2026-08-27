@@ -7,7 +7,8 @@ interface Node {
   label: string
   x: number // percent
   y: number // percent
-  tone: string // gradient
+  /** Luminance step, a real feature of the app rather than decoration. */
+  lum: number
   size: number
 }
 
@@ -17,19 +18,14 @@ interface Link {
   kind: 'branch' | 'bridge'
 }
 
-const tones = [
-  'from-sky-400 to-indigo-500',
-  'from-violet-400 to-fuchsia-500',
-  'from-emerald-400 to-teal-500',
-  'from-amber-400 to-orange-500',
-  'from-rose-400 to-pink-500',
-]
+/** One accent, five luminance steps. Node brightness encodes idea mass. */
+const LUMS = [1, 0.82, 0.66, 0.52, 0.4]
 
 const initialNodes: Node[] = [
-  { id: 1, label: 'Portfolio', x: 50, y: 30, tone: tones[1], size: 56 },
-  { id: 2, label: 'Demos', x: 26, y: 52, tone: tones[0], size: 44 },
-  { id: 3, label: 'Design', x: 72, y: 50, tone: tones[2], size: 44 },
-  { id: 4, label: 'Deploy', x: 50, y: 72, tone: tones[3], size: 40 },
+  { id: 1, label: 'Portfolio', x: 50, y: 30, lum: LUMS[0], size: 56 },
+  { id: 2, label: 'Demos', x: 26, y: 52, lum: LUMS[1], size: 44 },
+  { id: 3, label: 'Design', x: 72, y: 50, lum: LUMS[2], size: 44 },
+  { id: 4, label: 'Deploy', x: 50, y: 72, lum: LUMS[3], size: 40 },
 ]
 
 const initialLinks: Link[] = [
@@ -60,7 +56,7 @@ export function IdeaTrackerDemo() {
       label: childLabels[counter % childLabels.length],
       x: clamp(selected.x + Math.cos(angle) * dist),
       y: clamp(selected.y + Math.sin(angle) * dist * 0.8),
-      tone: tones[(counter + 2) % tones.length],
+      lum: LUMS[(counter + 2) % LUMS.length],
       size: kind === 'branch' ? 38 : 34,
     }
     setNodes((n) => [...n, newNode])
@@ -79,21 +75,25 @@ export function IdeaTrackerDemo() {
   const pos = (id: number) => nodes.find((n) => n.id === id)!
 
   return (
-    <PhoneFrame screenClassName="bg-[#06070f]">
+    <PhoneFrame screenClassName="bg-demo-idea-bg">
       <PhoneStatusBar />
       {/* Header */}
-      <div className="absolute inset-x-0 top-11 z-10 flex items-center justify-between px-4 py-2">
+      <div className="absolute inset-x-0 top-11 z-10 flex items-center justify-between px-lg py-xs">
         <div className="flex items-center gap-1.5">
-          <Sparkles size={15} className="text-sky-400" />
-          <span className="text-sm font-bold text-white">Constellation</span>
+          <Sparkles size={15} className="text-demo-idea-accent" />
+          <span className="text-caption-strong text-white">Constellation</span>
         </div>
-        <button onClick={reset} className="text-slate-500 active:text-slate-300">
+        <button
+          onClick={reset}
+          aria-label="Reset canvas"
+          className="text-demo-idea-muted active:scale-[0.95] active:text-white"
+        >
           <RotateCcw size={15} />
         </button>
       </div>
 
-      {/* Starfield */}
-      <div className="absolute inset-0">
+      {/* Star field. Deterministic positions, painted once, no animation. */}
+      <div className="absolute inset-0" aria-hidden="true">
         {Array.from({ length: 40 }).map((_, i) => (
           <span
             key={i}
@@ -111,7 +111,8 @@ export function IdeaTrackerDemo() {
 
       {/* Canvas */}
       <div className="absolute inset-0">
-        {/* Links */}
+        {/* Links: solid for a branch, dashed for a bridge. Shape carries the
+            meaning so a second color is not needed. */}
         <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
           {links.map((link, i) => {
             const a = pos(link.from)
@@ -123,7 +124,8 @@ export function IdeaTrackerDemo() {
                 y1={`${a.y}%`}
                 x2={`${b.x}%`}
                 y2={`${b.y}%`}
-                stroke={link.kind === 'bridge' ? 'rgba(34,211,238,0.5)' : 'rgba(124,92,255,0.45)'}
+                className="stroke-demo-idea-accent"
+                strokeOpacity={link.kind === 'bridge' ? 0.45 : 0.7}
                 strokeWidth={1.5}
                 strokeDasharray={link.kind === 'bridge' ? '4 4' : undefined}
               />
@@ -143,12 +145,13 @@ export function IdeaTrackerDemo() {
                 top: `${node.y}%`,
                 width: node.size,
                 height: node.size,
+                opacity: node.lum,
               }}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${node.tone} text-center transition-all duration-200 ${
-                isSel ? 'ring-2 ring-white ring-offset-2 ring-offset-[#06070f] scale-110' : 'opacity-90'
+              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-demo-idea-accent text-center transition-transform duration-200 ${
+                isSel ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-demo-idea-bg' : ''
               }`}
             >
-              <span className="flex h-full w-full items-center justify-center px-1 text-[8px] font-bold leading-none text-white">
+              <span className="flex h-full w-full items-center justify-center px-1 text-micro-legal font-semibold leading-none text-white">
                 {node.label}
               </span>
             </button>
@@ -157,25 +160,25 @@ export function IdeaTrackerDemo() {
       </div>
 
       {/* Selected info + controls */}
-      <div className="absolute inset-x-0 bottom-0 z-10 px-3 pb-7">
-        <div className="rounded-2xl glass p-3">
-          <p className="text-[10px] text-slate-400">Selected idea</p>
-          <p className="text-sm font-bold text-white">{selected.label}</p>
-          <div className="mt-2 grid grid-cols-2 gap-2">
+      <div className="absolute inset-x-0 bottom-0 z-10 px-sm pb-7">
+        <div className="rounded-lg bg-demo-idea-raised p-sm">
+          <p className="text-micro-legal text-demo-idea-muted">Selected idea</p>
+          <p className="text-caption-strong text-white">{selected.label}</p>
+          <div className="mt-xs grid grid-cols-2 gap-xs">
             <button
               onClick={() => addNode('branch')}
-              className="flex items-center justify-center gap-1.5 rounded-lg bg-brand/80 py-2 text-[11px] font-semibold text-white active:scale-95"
+              className="flex items-center justify-center gap-1.5 rounded-sm bg-demo-idea-accent py-xs text-fine-print font-semibold text-white active:scale-[0.95]"
             >
               <GitBranch size={13} /> Branch
             </button>
             <button
               onClick={() => addNode('bridge')}
-              className="flex items-center justify-center gap-1.5 rounded-lg bg-accent/80 py-2 text-[11px] font-semibold text-ink-950 active:scale-95"
+              className="flex items-center justify-center gap-1.5 rounded-sm border border-demo-idea-accent py-xs text-fine-print font-semibold text-demo-idea-accent active:scale-[0.95]"
             >
               <Workflow size={13} /> Bridge
             </button>
           </div>
-          <p className="mt-2 flex items-center justify-center gap-1 text-[9px] text-slate-500">
+          <p className="mt-xs flex items-center justify-center gap-1 text-micro-legal text-demo-idea-muted">
             <Plus size={9} /> Tap a node, then branch or bridge
           </p>
         </div>

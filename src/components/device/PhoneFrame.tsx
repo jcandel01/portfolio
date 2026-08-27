@@ -6,10 +6,10 @@ interface PhoneFrameStatusProps {
 }
 
 export function PhoneStatusBar({ dark = false }: PhoneFrameStatusProps) {
-  const color = dark ? 'text-slate-900' : 'text-white'
+  const color = dark ? 'text-ink' : 'text-on-dark'
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 top-0 z-20 flex h-11 items-center justify-between px-6 pt-1 text-[11px] font-semibold ${color}`}
+      className={`pointer-events-none absolute inset-x-0 top-0 z-20 flex h-11 items-center justify-between px-lg pt-1 text-fine-print font-semibold ${color}`}
     >
       <span>9:41</span>
       <div className="flex items-center gap-1">
@@ -33,30 +33,27 @@ export function PhoneStatusBar({ dark = false }: PhoneFrameStatusProps) {
 
 interface PhoneFrameProps {
   children: ReactNode
-  /** Background of the screen behind content (defaults to dark) */
+  /** Background of the screen behind content. */
   screenClassName?: string
 }
 
 /**
- * A reusable iPhone-style frame. Renders children inside a fixed-aspect
- * screen with a notch and home indicator. Demos provide their own status bar.
+ * An iPhone-style frame. This is a *product render* in DESIGN.md terms: it rests
+ * on the tile surface and is the one place `shadow-product` is allowed.
+ *
+ * The 44px/36px corner radii are hardware geometry, not UI chrome, so they sit
+ * outside the sm/md/lg/pill radii grammar on purpose.
  */
-export function PhoneFrame({ children, screenClassName = 'bg-ink-900' }: PhoneFrameProps) {
+export function PhoneFrame({ children, screenClassName = 'bg-ink' }: PhoneFrameProps) {
   return (
     <div className="relative mx-auto w-[300px] max-w-full select-none">
-      {/* Glow */}
-      <div className="absolute -inset-6 -z-10 rounded-[3rem] bg-brand/20 blur-3xl" />
-      {/* Body */}
-      <div className="rounded-[2.8rem] border border-white/15 bg-gradient-to-b from-zinc-800 to-zinc-900 p-2.5 shadow-2xl shadow-black/60">
-        {/* Screen */}
-        <div
-          className={`relative h-[620px] w-full overflow-hidden rounded-[2.3rem] ${screenClassName}`}
-        >
+      <div className="rounded-[44px] bg-surface-tile-1 p-2.5 shadow-product">
+        <div className={`relative h-[620px] w-full overflow-hidden rounded-[36px] ${screenClassName}`}>
           {/* Notch */}
-          <div className="absolute left-1/2 top-2 z-30 h-6 w-32 -translate-x-1/2 rounded-full bg-black" />
+          <div className="absolute left-1/2 top-2 z-30 h-6 w-32 -translate-x-1/2 rounded-pill bg-surface-black" />
           {children}
           {/* Home indicator */}
-          <div className="pointer-events-none absolute bottom-1.5 left-1/2 z-30 h-1 w-28 -translate-x-1/2 rounded-full bg-white/40" />
+          <div className="pointer-events-none absolute bottom-1.5 left-1/2 z-30 h-1 w-28 -translate-x-1/2 rounded-pill bg-white/40" />
         </div>
       </div>
     </div>

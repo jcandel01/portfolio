@@ -1,61 +1,79 @@
 import { useState, useEffect } from 'react'
+import { ArrowLeft, Bell, Camera, Check, CheckCircle2, Leaf, X } from 'lucide-react'
 import { BrowserFrame } from '../device/BrowserFrame'
 
+/**
+ * Simulated Valencian municipal recycling app. The UI copy stays in Spanish on
+ * purpose: it is realism, not an inconsistency (see CLAUDE.md).
+ *
+ * The four bin colors are semantic data (real Spanish container colors), which is
+ * why this demo is allowed more than one hue. They are rendered as swatches
+ * rather than emoji.
+ */
+
 const containers = [
-  { name: 'Amarillo', desc: 'Envases plásticos', bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', btn: 'bg-yellow-400', icon: '🟡', object: 'botella de plástico' },
-  { name: 'Verde',    desc: 'Vidrio',            bg: 'bg-green-50',  border: 'border-green-200',  text: 'text-green-700',  btn: 'bg-green-500',  icon: '🟢', object: 'botella de vidrio' },
-  { name: 'Azul',    desc: 'Papel y Cartón',     bg: 'bg-blue-50',   border: 'border-blue-200',   text: 'text-blue-700',   btn: 'bg-blue-500',   icon: '🔵', object: 'caja de cartón' },
-  { name: 'Marrón',  desc: 'Orgánico',           bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', btn: 'bg-orange-500', icon: '🟤', object: 'cáscara de naranja' },
+  { name: 'Amarillo', desc: 'Envases plásticos', swatch: 'bg-demo-eco-bin-yellow', object: 'botella de plástico' },
+  { name: 'Verde', desc: 'Vidrio', swatch: 'bg-demo-eco-bin-green', object: 'botella de vidrio' },
+  { name: 'Azul', desc: 'Papel y cartón', swatch: 'bg-demo-eco-bin-blue', object: 'caja de cartón' },
+  { name: 'Marrón', desc: 'Orgánico', swatch: 'bg-demo-eco-bin-brown', object: 'cáscara de naranja' },
 ]
 
-type Container = typeof containers[number]
+type Container = (typeof containers)[number]
 type Stage = 'upload' | 'analyzing' | 'done'
 
 const activity = [
-  { id: 1, item: 'Botella de plástico', container: 'Amarillo', correct: true,  date: '20 jun' },
-  { id: 2, item: 'Caja de cartón',      container: 'Azul',     correct: true,  date: '20 jun' },
-  { id: 3, item: 'Lata de refresco',    container: 'Marrón',   correct: false, date: '19 jun' },
+  { id: 1, item: 'Botella de plástico', container: 'Amarillo', correct: true, date: '20 jun' },
+  { id: 2, item: 'Caja de cartón', container: 'Azul', correct: true, date: '20 jun' },
+  { id: 3, item: 'Lata de refresco', container: 'Marrón', correct: false, date: '19 jun' },
 ]
 
 function HomeScreen({ onOpen }: { onOpen: (c: Container) => void }) {
   return (
-    <div className="no-scrollbar h-full overflow-y-auto bg-[#f6f8f6] pb-6 font-sans text-[#1E293B]">
-      <header className="flex items-center justify-between border-b border-slate-100 bg-white px-5 pb-3 pt-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-green-400 bg-yellow-200 text-sm font-black text-green-800">
+    <div className="no-scrollbar h-full overflow-y-auto bg-demo-eco-bg pb-lg text-demo-eco-ink">
+      <header className="flex items-center justify-between border-b border-hairline bg-demo-eco-raised px-lg pb-sm pt-lg">
+        <div className="flex items-center gap-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-demo-eco-accent text-caption-strong text-white">
             JC
           </div>
           <div>
-            <h2 className="text-sm font-black text-[#1E293B]">¡Hola, Jaime!</h2>
-            <p className="text-[11px] font-bold text-green-500">✪ 1.284 Puntos</p>
+            <h2 className="text-caption-strong">¡Hola, Jaime!</h2>
+            <p className="text-fine-print font-semibold text-demo-eco-accent">1.284 puntos</p>
           </div>
         </div>
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-base">🔔</div>
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-demo-eco-bg text-demo-eco-muted">
+          <Bell size={15} aria-hidden="true" />
+        </span>
       </header>
 
-      <div className="space-y-5 px-5 pt-4">
-        <div className="flex items-center justify-between rounded-2xl border border-green-100 bg-[#F0FDF4] p-4">
+      <div className="space-y-lg px-lg pt-lg">
+        {/* Mock impact figures. */}
+        <div className="flex items-center justify-between rounded-lg border border-hairline bg-demo-eco-raised p-lg">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-green-300">Tu impacto hoy</p>
-            <p className="text-2xl font-black text-green-800">2.3 kg</p>
-            <p className="mt-0.5 text-[11px] font-medium text-green-600">Histórico total: 48.6 kg</p>
+            <p className="text-micro-legal font-semibold uppercase tracking-widest text-demo-eco-muted">
+              Tu impacto hoy
+            </p>
+            <p className="text-tagline font-display text-demo-eco-accent">2.3 kg</p>
+            <p className="mt-0.5 text-fine-print text-demo-eco-muted">Histórico total: 48.6 kg</p>
           </div>
-          <span className="text-3xl">🍃</span>
+          <Leaf size={28} className="text-demo-eco-accent" aria-hidden="true" />
         </div>
 
         <div>
-          <h3 className="mb-3 text-base font-black text-[#1E293B]">Registra tu reciclaje</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <h3 className="mb-sm text-body-strong">Registra tu reciclaje</h3>
+          <div className="grid grid-cols-2 gap-sm">
             {containers.map((c) => (
-              <div key={c.name} className={`${c.bg} flex flex-col items-center rounded-2xl border-2 ${c.border} p-4 text-center`}>
-                <span className="mb-1 text-3xl">{c.icon}</span>
-                <h4 className={`text-sm font-black ${c.text}`}>{c.name}</h4>
-                <p className="mb-3 text-[10px] text-gray-400">{c.desc}</p>
+              <div
+                key={c.name}
+                className="flex flex-col items-start rounded-lg border border-hairline bg-demo-eco-raised p-sm"
+              >
+                <span className={`h-5 w-5 rounded-full ${c.swatch}`} aria-hidden="true" />
+                <h4 className="mt-xs text-caption-strong">{c.name}</h4>
+                <p className="text-micro-legal text-demo-eco-muted">{c.desc}</p>
                 <button
                   onClick={() => onOpen(c)}
-                  className={`rounded-xl px-3 py-1.5 text-[10px] font-black text-white transition-all ${c.btn} hover:brightness-110`}
+                  className="mt-xs inline-flex items-center gap-1 rounded-sm bg-demo-eco-accent px-2 py-1 text-micro-legal font-semibold text-white active:scale-[0.95]"
                 >
-                  📸 Añadir Foto
+                  <Camera size={11} aria-hidden="true" /> Añadir foto
                 </button>
               </div>
             ))}
@@ -63,23 +81,34 @@ function HomeScreen({ onOpen }: { onOpen: (c: Container) => void }) {
         </div>
 
         <div>
-          <div className="mb-3 flex items-end justify-between">
-            <h3 className="text-base font-black text-[#1E293B]">Actividad Reciente</h3>
-            <span className="text-xs font-bold text-green-500">Ver todo</span>
+          <div className="mb-sm flex items-end justify-between">
+            <h3 className="text-body-strong">Actividad reciente</h3>
+            <button className="text-caption font-semibold text-demo-eco-accent active:scale-[0.95]">
+              Ver todo
+            </button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-xs">
             {activity.map((log) => (
-              <div key={log.id} className={`flex items-center gap-3 rounded-xl border-l-4 bg-white p-3 ${log.correct ? 'border-green-400' : 'border-red-400'}`}>
-                <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm ${log.correct ? 'bg-green-100' : 'bg-red-100'}`}>
-                  {log.correct ? '✅' : '❌'}
-                </div>
+              <div
+                key={log.id}
+                className="flex items-center gap-sm rounded-sm border border-hairline bg-demo-eco-raised p-sm"
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                    log.correct ? 'bg-demo-eco-accent text-white' : 'bg-demo-eco-bg text-demo-eco-muted'
+                  }`}
+                >
+                  {log.correct ? <Check size={14} /> : <X size={14} />}
+                </span>
                 <div className="flex-1">
-                  <p className={`text-xs font-black ${log.correct ? 'text-green-700' : 'text-red-600'}`}>
-                    {log.correct ? '¡Acierto! +1 punto' : 'Fallo −1 punto'}
+                  <p className="text-caption-strong">
+                    {log.correct ? '¡Acierto! +1 punto' : 'Fallo, −1 punto'}
                   </p>
-                  <p className="text-[10px] text-gray-400">{log.item} · Contenedor {log.container}</p>
+                  <p className="text-micro-legal text-demo-eco-muted">
+                    {log.item}, contenedor {log.container}
+                  </p>
                 </div>
-                <span className="text-[10px] text-gray-400">{log.date}</span>
+                <span className="text-micro-legal text-demo-eco-muted">{log.date}</span>
               </div>
             ))}
           </div>
@@ -93,9 +122,20 @@ function ScannerScreen({ container, onBack }: { container: Container; onBack: ()
   const [stage, setStage] = useState<Stage>('upload')
   const [progress, setProgress] = useState(0)
 
+  // Progress is reset by the transition that starts the run, not inside the
+  // effect, so the effect only owns the timers.
+  const startAnalysis = () => {
+    setProgress(0)
+    setStage('analyzing')
+  }
+
+  const restart = () => {
+    setProgress(0)
+    setStage('upload')
+  }
+
   useEffect(() => {
     if (stage !== 'analyzing') return
-    setProgress(0)
     const interval = setInterval(() => {
       setProgress((p) => {
         if (p >= 100) {
@@ -106,76 +146,79 @@ function ScannerScreen({ container, onBack }: { container: Container; onBack: ()
       })
     }, 50)
     const timeout = setTimeout(() => setStage('done'), 1500)
-    return () => { clearInterval(interval); clearTimeout(timeout) }
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
   }, [stage])
 
   return (
-    <div className="flex h-full flex-col bg-white font-sans text-[#1E293B]">
-      <header className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+    <div className="flex h-full flex-col bg-demo-eco-raised text-demo-eco-ink">
+      <header className="flex items-center justify-between border-b border-hairline px-lg py-sm">
         <button
           onClick={onBack}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-green-50 text-green-700 hover:bg-green-100"
+          aria-label="Volver"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-demo-eco-bg text-demo-eco-accent active:scale-[0.95]"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px" fill="currentColor">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-          </svg>
+          <ArrowLeft size={18} />
         </button>
-        <h2 className="font-bold text-[#1E293B]">Escáner IA</h2>
+        <h2 className="text-body-strong">Escáner IA</h2>
         <div className="h-9 w-9" />
       </header>
 
-      <div className="flex flex-1 flex-col overflow-hidden px-4 py-3">
+      <div className="flex flex-1 flex-col overflow-hidden px-lg py-sm">
         {/* Camera zone */}
-        <div className="relative flex h-72 w-full items-center justify-center overflow-hidden rounded-xl border-4 border-green-200 bg-[#f8faf8]">
+        <div className="relative flex h-72 w-full items-center justify-center overflow-hidden rounded-lg border border-hairline bg-demo-eco-bg">
           {stage === 'upload' && (
-            <div className="flex flex-col items-center gap-3 text-center">
-              <div className="rounded-full bg-white p-4 text-green-500 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 24 24" width="40px" fill="currentColor">
-                  <path d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/>
-                </svg>
-              </div>
-              <p className="text-sm font-semibold text-slate-500">Contenedor {container.name} {container.icon}</p>
+            <div className="flex flex-col items-center gap-sm text-center">
+              <span className="rounded-full bg-demo-eco-raised p-lg text-demo-eco-accent">
+                <Camera size={36} aria-hidden="true" />
+              </span>
+              <p className="flex items-center gap-xs text-caption text-demo-eco-muted">
+                Contenedor {container.name}
+                <span className={`h-3 w-3 rounded-full ${container.swatch}`} aria-hidden="true" />
+              </p>
               <button
-                onClick={() => setStage('analyzing')}
-                className="rounded-full bg-green-500 px-6 py-2 text-sm font-bold text-white shadow hover:brightness-105"
+                onClick={startAnalysis}
+                className="rounded-pill bg-demo-eco-accent px-lg py-xs text-caption font-semibold text-white active:scale-[0.95]"
               >
                 Simular análisis
               </button>
             </div>
           )}
 
-          {stage === 'analyzing' && (
+          {stage !== 'upload' && (
             <>
-              <img src="/yolo-demo.png" alt="Analizando" className="absolute inset-0 h-full w-full object-contain opacity-60" />
-              <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-green-600 backdrop-blur-sm">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                </span>
-                PROCESANDO...
-              </div>
-            </>
-          )}
-
-          {stage === 'done' && (
-            <>
-              <img src="/yolo-demo.png" alt="Resultado YOLO" className="absolute inset-0 h-full w-full object-contain" />
-              <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1 text-[10px] font-bold text-white">
-                DETECTADO
+              <img
+                src="/yolo-demo.webp"
+                alt="Segmentación YOLO del objeto fotografiado"
+                width={1400}
+                height={1050}
+                className={`absolute inset-0 h-full w-full object-contain ${
+                  stage === 'analyzing' ? 'opacity-60' : ''
+                }`}
+              />
+              <div className="absolute right-3 top-3 rounded-pill bg-demo-eco-accent px-sm py-1 text-micro-legal font-semibold uppercase tracking-wide text-white">
+                {stage === 'analyzing' ? 'Procesando' : 'Detectado'}
               </div>
             </>
           )}
         </div>
 
-        {/* Analyzing progress */}
+        {/* Determinate progress. Real loading feedback, not a comparison bar. */}
         {stage === 'analyzing' && (
-          <div className="mt-3 space-y-1.5">
-            <p className="text-sm font-semibold text-slate-600">La IA está pensando...</p>
-            <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+          <div className="mt-sm space-y-1.5">
+            <p className="text-caption text-demo-eco-muted">La IA está pensando...</p>
+            <div
+              className="h-1 overflow-hidden rounded-pill bg-demo-eco-bg"
+              role="progressbar"
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Progreso del análisis"
+            >
               <div
-                className="h-full rounded-full bg-green-500 transition-all duration-75"
+                className="h-full rounded-pill bg-demo-eco-accent transition-all duration-75"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -184,26 +227,27 @@ function ScannerScreen({ container, onBack }: { container: Container; onBack: ()
 
         {/* Result */}
         {stage === 'done' && (
-          <div className="mt-3 flex flex-1 flex-col">
+          <div className="mt-sm flex flex-1 flex-col">
             <div className="text-center">
-              <h3 className="text-lg font-extrabold text-[#1E293B]">¡Objeto detectado!</h3>
-              <p className="text-sm capitalize text-slate-400">{container.object}</p>
+              <h3 className="text-body-strong">¡Objeto detectado!</h3>
+              <p className="text-caption capitalize text-demo-eco-muted">{container.object}</p>
             </div>
-            <div className="mt-3 flex flex-col items-center gap-2 rounded-xl border border-green-200 bg-green-50 p-4 text-center">
-              <div className="rounded-full bg-green-200 p-2 text-green-700">
-                <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 0 24 24" width="28px" fill="currentColor">
-                  <path d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
-              <p className="text-2xl font-black text-green-700">+1 Punto</p>
-              <p className="text-xs text-green-600">¡Contenedor correcto!</p>
+            <div className="mt-sm flex flex-col items-center gap-xs rounded-lg border border-hairline bg-demo-eco-bg p-lg text-center">
+              <CheckCircle2 size={26} className="text-demo-eco-accent" aria-hidden="true" />
+              <p className="text-tagline font-display text-demo-eco-accent">+1 punto</p>
+              <p className="text-caption text-demo-eco-muted">¡Contenedor correcto!</p>
             </div>
-            <div className="mt-auto space-y-2 pt-3">
-              <button onClick={onBack} className="w-full rounded-xl bg-green-500 py-3 text-sm font-bold text-white">
-                Continuar al Inicio
+            <div className="mt-auto space-y-xs pt-sm">
+              <button
+                onClick={onBack}
+                className="w-full rounded-sm bg-demo-eco-accent py-xs text-caption font-semibold text-white active:scale-[0.95]"
+              >
+                Continuar al inicio
               </button>
-              <button onClick={() => setStage('upload')} className="w-full rounded-xl bg-slate-100 py-3 text-sm font-bold text-slate-600">
+              <button
+                onClick={restart}
+                className="w-full rounded-sm border border-demo-eco-accent py-xs text-caption font-semibold text-demo-eco-accent active:scale-[0.95]"
+              >
                 Subir otra foto
               </button>
             </div>
@@ -225,10 +269,11 @@ export function EcoVecinosDemo() {
 
   return (
     <BrowserFrame url={screen === 'home' ? 'ecovecinos.app' : 'ecovecinos.app/analisis'}>
-      {screen === 'home'
-        ? <HomeScreen onOpen={openScanner} />
-        : <ScannerScreen container={activeContainer!} onBack={() => setScreen('home')} />
-      }
+      {screen === 'home' ? (
+        <HomeScreen onOpen={openScanner} />
+      ) : (
+        <ScannerScreen container={activeContainer!} onBack={() => setScreen('home')} />
+      )}
     </BrowserFrame>
   )
 }
