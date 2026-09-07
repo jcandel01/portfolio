@@ -7,7 +7,7 @@ export const profile = {
   bio: `I'm a software developer based in Valencia with hands-on experience in enterprise backend systems, computer vision and mobile product development. Professionally I work with C#, Python and Azure at companies like HP and Grupo Alonso; on the side, my main focus lies in robotics and autonomous systems, developing applications and simulations using ROS 2, Gazebo, and PX4 in C++ and Python. While I also have experience building mobile architectures with React Native and Supabase, my true passion is bridging software and physical systems. I also hold an AI Diploma from Samsung Innovation Campus and I'm always looking for the next complex problem worth solving.`,
   location: 'Valencia, Spain',
   email: 'jcandel01@gmail.com',
-  cvUrl: '/cv.pdf',
+  cvUrl: '/JCM_CV.pdf',
 
   links: {
     github: 'https://github.com/jcandel01',
