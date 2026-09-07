@@ -49,7 +49,7 @@ export const projects: Project[] = [
     subtitle: 'Autonomous navigation with place recognition',
     description:
       'A robotics project where a drone uses ROS2 nodes to navigate autonomously by combining visual place recognition models such as NetVLAD with YOLO-based object detection. The pipeline fuses camera perception, localization cues and mission logic so the drone can recognize where it is, react to visual targets and keep moving through a planned route without manual guidance.',
-    tech: ['ROS2', 'Python', 'NetVLAD', 'YOLO', 'OpenCV', 'PyTorch', 'Computer Vision'],
+    tech: ['ROS2', 'NetVLAD', 'YOLO', 'OpenCV', 'PyTorch', 'Computer Vision', 'PX4', 'Gazebo', 'MAVROS'],
     features: [
       'ROS2 graph coordinating perception, localization and navigation nodes',
       'NetVLAD-style place recognition for visual relocalization',
