@@ -64,7 +64,7 @@ export const profile = {
       company: 'PYGSAGROUP',
       role: 'Software Developer',
       period: 'Jul 2023 to Dec 2023',
-      stack: ['Python', 'C#', 'OpenCV', 'Cognex Vision Pro'],
+      stack: ['Python', 'C#', 'OpenCV', 'Cognex Vision Pro', 'pytorch', 'C++'],
       bullets: [
         'Computer vision solutions for industrial quality control processes',
         'Image processing pipelines with OpenCV and Cognex Vision Pro',
@@ -78,7 +78,7 @@ export const profile = {
     { name: 'AI Diploma, Samsung Innovation Campus', issuer: 'Universitat Politècnica de València', hours: '350h' },
     { name: 'React + TypeScript: The Complete Guide', issuer: 'Udemy', hours: '58h' },
     { name: '100-Hour Linux Course', issuer: 'LinuxFoundationX, UPValenciaX', hours: '100h' },
-    { name: 'Machine Learning Crash Course', issuer: 'Google', hours: '' },
+    { name: 'Machine Learning Crash Course', issuer: 'Google', hours: '360h' },
   ],
 
   skills: [
